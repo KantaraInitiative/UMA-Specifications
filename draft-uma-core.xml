@@ -8,7 +8,7 @@
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC4627 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
-<rfc category="std" docName="draft-hardjono-oauth-umacore-00-rev16"
+<rfc category="std" docName="draft-hardjono-oauth-umacore-00-rev17"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -224,6 +224,10 @@
 
         <t>Unless otherwise noted, all the protocol parameter names and values
         are case sensitive.</t>
+        
+        <t>The usage in this document of URIs is temporary ony,
+          awaiting final standardization in the eventual standards body to whom 
+          this document will be contributed and taken up as a work item.</t>
       </section>
 
       <section title="Terminology">
@@ -410,14 +414,14 @@
           <t>Property type values for access token and claim format
           information:<list hangIndent="6" style="hanging">
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/token_formats"><vspace />REQUIRED
+              hangText="http://docs.kantarainitiative.org/uma/1.0/token_formats"><vspace />REQUIRED
               (one or more). Access token format produced by this AM.
               Currently the only option is "artifact".</t>
 
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/claim_formats"><vspace />OPTIONAL
+              hangText="http://docs.kantarainitiative.org/uma/1.0/claim_formats"><vspace />OPTIONAL
               (zero or more). Claim format supported by this AM. Currently the
-              options are "openid-connect" and "claims2". If the AM is capable
+              options are "openid-connect". If the AM is capable
               of requesting and accepting any claim formats at all, it MUST
               declare them.</t>
             </list></t>
@@ -425,14 +429,14 @@
           <t>Link relationship rel values for the protection API endpoints for
           the host to use: <list hangIndent="6" style="hanging">
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/host_token_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/host_token_uri"><vspace />REQUIRED.
               The host access token endpoint. Available HTTP methods are as
               defined by <xref target="OAuth2"></xref> for a token endpoint.
               Supplies the endpoint the host uses to ask for a host access
               token.</t>
 
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/host_user_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/host_user_uri"><vspace />REQUIRED.
               The host user authorization endpoint. Available HTTP methods are
               as defined by OAuth for an authorization endpoint. Supplies the
               endpoint the host uses to gather the consent of the authorizing
@@ -442,7 +446,7 @@
               consent.</t>
 
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/host_resource_reg_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/host_resource_reg_uri"><vspace />REQUIRED.
               The resource set registration endpoint. Requests to this
               endpoint require a host access token to be present. Supplies the
               endpoint the host uses for registering resource sets with the AM
@@ -451,7 +455,7 @@
               mechanism such as TLS.</t>
 
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/host_token_status_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/host_token_status_uri"><vspace />REQUIRED.
               The token status endpoint. Requests to this endpoint require a
               host access token to be present. Supplies the endpoint the host
               uses to request the status of access tokens presented to them by
@@ -460,7 +464,7 @@
               mechanism such as TLS.</t>
 
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/host_perm_reg_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/host_perm_reg_uri"><vspace />REQUIRED.
               The permission registration endpoint. Requests to this endpoint
               require a host access token to be present. Supplies the endpoint
               the host uses for registering permissions with the AM for which
@@ -473,7 +477,7 @@
           <t>Link relationship rel values for the authorization API endpoints
           for the requester to use: <list hangIndent="6" style="hanging">
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/req_token_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/req_token_uri"><vspace />REQUIRED.
               The requester access token endpoint. Available HTTP methods are
               as defined by <xref target="OAuth2"></xref> for a token issuance
               endpoint. Supplies the endpoint the requester uses to ask for an
@@ -481,7 +485,7 @@
               transport-layer security mechanism such as TLS.</t>
 
               <t
-              hangText="http://kantarainitiative.org/ns/uma/1.0/req_perm_uri"><vspace />REQUIRED.
+              hangText="http://docs.kantarainitiative.org/uma/1.0/req_perm_uri"><vspace />REQUIRED.
               The permission endpoint. Supplies the endpoint the requester
               uses to ask for authorization to have a new permission
               associated with its existing requester access token, which MUST
@@ -498,35 +502,35 @@
 <!-- Applies to both hosts and requesters -->
 
 <Property
-  type="http://kantarainitiative.org/ns/uma/1.0/token_formats">artifact
+  type="http://docs.kantarainitiative.org/uma/1.0/token_formats">artifact
 </Property>
 <Property
-  type="http://kantarainitiative.org/ns/uma/1.0/claim_formats">claims2
+  type="http://docs.kantarainitiative.org/uma/1.0/claim_formats">OpenID-UserInfo
 </Property>
 
 <!-- Host protection API -->
 
 <!-- AM as authorization server to host-as-client -->
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/host_token_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/host_token_uri"
   href="https://am.example.com/host/token_uri">
 </Link>
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/host_user_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/host_user_uri"
   href="https://am.example.com/host/user_uri">
 </Link>
 
 <!-- AM as resource server to host-as-client -->
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/host_resource_reg_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/host_resource_reg_uri"
   href="https://am.example.com/host/resource_details_uri">
 </Link>
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/host_token_status_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/host_token_status_uri"
   href="https://am.example.com/host/token_validation_uri">
 </Link>
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/host_perm_reg_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/host_perm_reg_uri"
   href="https://am.example.com/host/scope_reg_uri">
 </Link>
 
@@ -534,13 +538,13 @@
 
 <!-- AM as authorization server to requester-as-client -->
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/req_token_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/req_token_uri"
   href="https://am.example.com/requester/token_uri">
 </Link>
 
 <!-- AM as resource server to requester-as-client -->
 <Link
-  rel="http://kantarainitiative.org/ns/uma/1.0/req_perm_uri"
+  rel="http://docs.kantarainitiative.org/uma/1.0/req_perm_uri"
   href="https://am.example.com/requester/perm_uri">
 </Link>       ]]></artwork>
           </figure>
@@ -1827,6 +1831,7 @@ Cache-Control: no-store
         </section>
       </section>
 
+
       <section anchor="r-am-authz-scope"
                title="Requester-AM: Request Authorization to Add Permission">
         <t>In this interaction, the requester asks the AM to grant
@@ -1900,18 +1905,20 @@ Cache-Control: no-store
         conformance requirements on requesters and AMs to handle particular
         claim formats defined in other specifications, as well as specifying
         requirements that claim formats seeking consideration for use in UMA
-        must meet. Two candidate solutions, corresponding to claim formats the
+        must meet. Currently the  claim formats that an
         AM can declare in its metadata (<xref target="am-endpoints"></xref>),
-        are:<list style="symbols">
+        are as follows:<list style="symbols">
             <t><xref target="OpenID-Connect-Fmwk"></xref> (see <xref
             target="trusted-claims"></xref> below for further context).</t>
-
-            <t><xref target="Claims2.0"></xref> and <xref
-            target="SAAC"></xref>.</t>
           </list></t>
 
+        <section anchor="trusted-claims-human-driven"
+          title="Human Driven Requester Application Flow">
+          <t></t>
+ 
+        
         <section anchor="trusted-claims"
-                 title="Trusted Claims with OpenID Connect">
+                 title="AM as an OpenID Connect RP">
           <t></t>
 
           <t>It is hoped that UMA can profile the emerging OpenID Connect
@@ -1937,6 +1944,25 @@ Cache-Control: no-store
           provider).</t>
         </section>
         
+        <section anchor="trusted-claims-others"
+          title="Other options of AM Claims Handling">
+          <t></t>
+          
+          <t>TBD</t>
+          
+        </section>
+          
+        </section>
+        
+        
+        <section anchor="trusted-claims-autonomously-driven"
+          title="Autonomously Driven Requester Application Flow">
+          <t></t>
+          
+          <t>(Text to follow TBD)</t>
+          
+        </section>
+          
         
         <section anchor="r-am-add-permissions-success-response"
           title="AM Returns an Add Permission Success Response">
@@ -2133,88 +2159,7 @@ Cache-Control: no-store
     </section>
 
     <section title="Issues">
-      <t>Catalog of currently known issues.<list style="symbols">
-          <t>ISSUE#14: Need to unify the request for authorization with the
-          providing of claims, so that this can be a single request-response
-          pattern that can loop as required.</t>
-
-          <t>ISSUE#15: If the content-type (of the claims response document)
-          is not recognized by the AM, what happens then? Should be an error
-          from the AM. We need to create an error for this.</t>
-
-          <t>ISSUE#16: Need to profile for specific claims-requested lists and
-          claim responses.</t>
-
-          <t>ISSUE#17: Need to say what claims formats are supported.</t>
-
-          <t>ISSUE#18: Provide commentary on any requirements layered on the
-          forthcoming OAuth security considerations section; discuss UMA-layer
-          implications for more meaningful authentication of
-          requesters/requesting parties; discuss implications of user-mediated
-          AM/host trust model; discuss short-lived token technique for
-          lightweight requester correlation...</t>
-
-          <t>ISSUE#19: More privacy considerations.</t>
-
-          <t>ISSUE#24: From Lukasz email 6/6/2011: Rev8 Section 4.1: Empty
-          response body? In SAM we return 'resource_id' and 'policy_uri' so
-          that the host can redirect the user to the policy definition page
-          (sharing setting screen) on AM.</t>
-
-          <t>ISSUE#25: From Lukasz email 6/6/2011: Section 4.1 - what happens
-          when a resource (being registered) already exists?</t>
-
-          <t>ISSUE#27: Can Update Resource Set Description API mistakenly
-          overwrite/destroy an existing resource description?</t>
-
-          <t>ISSUE #32: RESOLVED in Rev 13: Need to add back detail on how the
-          host tells the requester which AM to go to so that it can discover
-          the token endpoint and authorization endpoint. Lukasz and Maciej
-          will flesh this out with their own message examples. I think we
-          still need to explain explicitly how the requester has to construct
-          the hostmeta URI.</t>
-
-          <t>ISSUE #33: Should it be possible to have an "implicit resource
-          set" somehow that (in syntactic-sugar fashion) allows permissions to
-          be passed around much as scopes already are passed around in plain
-          OAuth?</t>
-
-          <t>ISSUE #35: Consider allowing the host to provide a filter in the
-          token validation request to indicate the particular resource
-          sets/scopes it would find acceptable, so that the AM can provide
-          only permissions that potentially match any of them. This approaches
-          a PDP/PEP model.</t>
-
-          <t>ISSUE #36: Okay to use the made-up URI
-          "http://kantarainitiative.org/ns/uma/1.0/..." for labeling the AM
-          endpoints and other identifying URIs? Should these actually resolve
-          to anything?</t>
-
-          <t>ISSUE #37: Okay to cache token status as now explained? Do we
-          need to add examples if so?</t>
-
-          <t>ISSUE #38: Does the returned permission ticket need an expiration
-          field?</t>
-
-          <t>ISSUE #39: Examine all MAYs/SHOULDs throughout the spec to see
-          what conformance instructions/levels may be necessary. E.g., in
-          Section 3.1.3, why is the host's 401 Unauthorized response to a
-          requester with an invalid token a SHOULD instead of a MUST? When
-          would it ever do something different? Similarly, Section 3.1.4, why
-          are the host's actions in the case of insufficient permission a
-          SHOULD instead of a MUST? Is it a case of the host deciding to just
-          not respond at all? In Section 3.2, why do we say the requester
-          SHOULD use the client credentials authorization grant type instead
-          of MUST?</t>
-
-          <t>ISSUE #40: MUST the host give access if the requester has
-          suitable permission?</t>
-
-          <t>ISSUE #41: MUST the host register a permission? If it doesn't
-          want to, or doesn't succeed in doing so, MUST it respond to the
-          requester, and if so, should the ticket (and even the am_uri) field
-          be optional?</t>
-        </list></t>
+      <t>(All issues are now captured and addressed in GitHub).</t>
     </section>
   </middle>
 
