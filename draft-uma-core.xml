@@ -168,7 +168,7 @@
         document are to be interpreted as described in <xref
         target="RFC2119"></xref>.</t>
 
-        <t>Unless otherwise noted, all the protocol parameter names and values
+        <t>Unless otherwise noted, all the protocol properties and values
         are case sensitive.</t>
 
         <t>The assignment in this document of URI labels is temporary,
@@ -421,7 +421,7 @@
             defined by this specification is "openid", for which details are
             supplied in <xref target="trusted-claims"></xref>. The AM MAY
             provide support for additional claim formats, indicated by
-            extension values that MUST begin with "X-" or "x-". If the AM is
+            extension values that MUST contain a fully-qualified URL or begin with "X-" or "x-". If the AM is
             capable of requesting and accepting any claim formats at all, it
             MUST declare them.</t>
           </list></t>
@@ -642,8 +642,8 @@
 ]]></artwork>
           </figure>
 
-          <t>Scope descriptions MAY contain extension parameters that are not
-          defined in this specification. The names of extension parameters
+          <t>Scope descriptions MAY contain extension properties that are not
+          defined in this specification. The names of extension properties
           MUST contain a fully qualified URL, or begin with "x-" or "X-".</t>
         </section>
 
@@ -656,7 +656,7 @@
 
           <t>The resource set description is a <xref format="default"
           target="RFC4627">JSON</xref> object with the name "resource_set" and
-          with the following parameters:<list style="hanging">
+          with the following properties:<list style="hanging">
 
               <t hangText="name">REQUIRED. A human-readable string describing
               a set of one or more resources. The AM SHOULD use the name in
@@ -692,9 +692,9 @@
 ]]></artwork>
           </figure>
 
-          <t>Resource set descriptions MAY contain extension parameters that
+          <t>Resource set descriptions MAY contain extension properties that
           are not defined in this specification. The names of extension
-          parameters MUST contain a fully qualified URL or begin with "x-" or "X-".</t>
+          properties MUST contain a fully qualified URL or begin with "x-" or "X-".</t>
 
           <t>When a host creates or updates a resource set description (see
           <xref target="reg-api"></xref>), the AM MUST attempt to retrieve the
@@ -737,8 +737,7 @@
               Forbidden error and fail to act on the request.</t>
 
               <t hangText="{rsid}">An identifier for a resource set
-              description. The identifier MUST match the "_id" parameter value
-              in the description itself.</t>
+              description.</t>
             </list></t>
 
           <t>Without a specific resource set identifier path component, the
@@ -1484,7 +1483,7 @@ Content-Type: application/json
           access token.</t>
 
           <t>The token status description is a JSON array of zero or more permission
-          objects, each with the following parameters:<list style="hanging">
+          objects, each with the following properties:<list style="hanging">
               <t hangText="resource_set_id">REQUIRED. A string that uniquely
               identifies the resource set, access to which has been granted to
               this requester on behalf of this requesting party. The
@@ -1499,7 +1498,7 @@ Content-Type: application/json
               <t hangText="exp">REQUIRED. An integer representing the
               expiration time on or after which the permission MUST NOT be
               accepted for authorized access. The processing of the exp
-              parameter requires that the current date/time MUST be before the
+              property requires that the current date/time MUST be before the
               expiration date/time listed in the exp claim. Host implementers
               MAY provide for some small leeway, usually no more than a few
               minutes, to account for clock skew.</t>
@@ -1588,7 +1587,7 @@ Cache-Control: no-store
         permission.</t>
 
         <t>The requested scope is an object with the name
-        "requested_permission" and the following parameters:<list
+        "requested_permission" and the following properties:<list
             style="hanging">
             <t hangText="resource_set_id">REQUIRED. A string that uniquely
             identifies a resource set, access to which this requester is
@@ -1636,7 +1635,7 @@ Host: am.example.com
                  title="AM Returns a Permission Registration Success Response">
           <t>The AM responds with an HTTP 201 (Created) status code and
           includes the Location header in its response as well as the "ticket"
-          parameter in the JSON-formatted body:</t>
+          property in the JSON-formatted body:</t>
 
           <figure>
             <preamble>For example:</preamble>
@@ -1717,7 +1716,7 @@ Cache-Control: no-store
 
             <t>Its own requester access token</t>
 
-            <t>A state parameter (to help avoid replay attacks)</t>
+            <t>A state property (to help avoid replay attacks)</t>
 
             <t>A redirect URL</t>
 
@@ -1840,7 +1839,7 @@ Cache-Control: no-store
         gathering standardized claims from that end-user, and allows for
         extensions to support other solutions for this use case and other use
         cases. The AM SHOULD document its claims-handling ability in its XRD
-        metadata through the claim_formats parameter (see <xref
+        metadata through the claim_formats property (see <xref
         target="am-endpoints"></xref>). For the business-level and legal
         implications of different technical authorization flows, see <xref
         target="UMA-trustmodel"></xref>.</t>
@@ -1878,7 +1877,7 @@ Cache-Control: no-store
             from an end-user requesting party, leveraging OpenID Connect
             mechanisms to transmit claims from distributed sources. If it
             supports this option, the AM MUST supply the "openid" value for
-            one of its "claim_formats" parameters in its AM metadata (see
+            one of its "claim_formats" properties in its AM metadata (see
             <xref target="am-endpoints"></xref> for how to formulate this
             metadata).</t>
 
@@ -1935,11 +1934,11 @@ Cache-Control: no-store
         attempts to access a protected resource at the host, if the client
         request is successfully authenticated by OAuth means, but is invalid
         for another reason, the AM or host responds with an UMA error response
-        by adding the following parameters to the entity body of the HTTP
+        by adding the following properties to the entity body of the HTTP
         response using the "application/json" media type: <list
             style="hanging">
             <t hangText="error">REQUIRED. A single error code. Value for this
-            parameter is defined in the specific AM endpoint description.</t>
+            property is defined in the specific AM endpoint description.</t>
 
             <t hangText="error_description">OPTIONAL. A human-readable text
             providing additional information, used to assist in the
@@ -2149,7 +2148,7 @@ Cache-Control: no-store
       descriptions that represent these scopes, which it is able to reuse for
       all of its users (not just Alice).</t>
 
-      <t>The "name" parameter values are intended to be seen by Alice when she
+      <t>The "name" property values are intended to be seen by Alice when she
       maps authorization constraints to specific resource sets and actions
       while visiting CopMonkey, such that Alice would see the strings "View
       Photo and Related Info" and "All Actions", likely accompanied by the
@@ -2190,7 +2189,7 @@ Cache-Control: no-store
       this photo (internal only; Photoz is the only application that knows how
       to map a particular photo to a particular resource set). Photoz also
       prepares the following resource set description, which is specific to
-      Alice and her photo. The "name" parameter value is intended to be seen
+      Alice and her photo. The "name" property value is intended to be seen
       by Alice in mapping authorization constraints to specific resource sets
       and actions when she visits CopMonkey, such that Alice would see the
       string "Steve the puppy!", likely accompanied by the referenced icon, in
