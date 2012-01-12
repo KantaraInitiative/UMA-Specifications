@@ -349,7 +349,13 @@
         set in a scoped (bounded) manner. Hosts register permission requests
         on behalf of requesters that have attempted access. Requesters
         subsequently ask AMs for permissions to be associated with their
-        tokens. AMs grant (or deny) permissions to requesters.</t>
+        tokens. AMs grant (or deny) permissions to requesters.
+        </t>
+        
+        <t>An access token is bound to a given resource set, to the host
+        where that resource resides, to the AM that controls access
+        to that resource at the host and the premissions and scopes
+        relating to that resource set as configured by the resource owber (user).</t>
 
         <t>In order to represent meaningful, auditable, and potentially
         legally enforceable authorization (see <xref
@@ -1271,12 +1277,18 @@ KCwoKDBAMDAwMDAwQDA4PEA8ODBMTFBQTExwb
 
       <section anchor="h-am-token-validation"
                title="Host-AM: Ask for Requester Access Token Status">
-        <t>On receiving a requester access token in an access attempt, the
-        host asks the AM for that token's status. If it has a cached token
-        status description available that has not expired yet, it MAY use it
-        instead.</t>
+        <t>In the current specification, the only mandatory to implement 
+        access token type is the "artifact" token type consisting of an opaque string
+        (see <xref target="am-endpoints"></xref>).
+        This implies that upon receiving a requester access token in an access attempt, the
+        host must ask the AM for that token's status. If it has a cached token
+        status description available that has not expired yet, it MAY use it instead.
+        Note that the current UMA approach of "artifact" token types does
+        not preclude the future development of deployment profiles
+        for UMA which specifies alternate forms of token types.</t>
 
-        <t>The host makes the request to the AM with a POST request to the
+        <t>In order to request the AM for a token's status,
+        the host makes the request to the AM with a POST request to the
         AM's token status endpoint. The body of the HTTP request message
         contains a JSON <xref target="RFC4627"></xref> document providing the
         requester access token and the IP address of the requester's request.
@@ -1320,9 +1332,11 @@ Content-Type: application/json
         OK status code, containing a JSON <xref target="RFC4627"></xref>
         document supplying the token status description. The token status
         description either contains all of the permissions that are currently
-        valid for this requester access token (and thus for the requesting
+        valid for this requester access token at the host in question 
+        (and thus for the requesting
         party on whose behalf it is acting), or indicates that the token is
-        invalid. The AM MAY set a cache period for the returned token status
+        invalid (see <xref target="scope-discussion"></xref>). 
+        The AM MAY set a cache period for the returned token status
         description that allows the host to reuse it over some period of time
         when it later sees the same requester access token.</t>
 
