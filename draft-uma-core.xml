@@ -8,7 +8,7 @@
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC4627 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
-<rfc category="std" docName="draft-hardjono-oauth-umacore-02"
+<rfc category="std" docName="draft-hardjono-oauth-umacore-03"
      ipr="trust200902">
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -37,7 +37,7 @@
       </address>
     </author>
 
-    <date day="8" month="December" year="2011" />
+    <date day="13" month="January" year="2012" />
 
     <abstract>
       <t>This specification defines the User-Managed Access (UMA) core
@@ -1180,8 +1180,7 @@ WWW-Authenticate: UMA realm="example",
             requester, the Host SHOULD register the desired permission with
             the AM (see <xref target="h-am-register-scope"></xref>) and then
             respond to the requester with the HTTP 403 (Forbidden) status code
-            indicating that the token has "insufficient_scope" (see Section
-            2.4.1 of <xref target="OAuth-bearer"></xref>), along with
+            indicating that the token has "insufficient_scope", along with
             providing the AM's URI to facilitate AM metadata discovery by the
             requester, and the permission ticket it just received from the AM
             iin the body of the response in JSON form.</t>
@@ -1288,6 +1287,14 @@ KCwoKDBAMDAwMDAwQDA4PEA8ODBMTFBQTExwb
 
         <t>The host gains access to the token status endpoint by presenting
         its own host access token in the request.</t>
+        
+        <t>Note that although the use of a GET may be more advantageous
+          for the cases where the requester provides a bearer token
+          (e.g. reduces the attack possibilities on the 
+          bearer token should the AM becomes compromised),
+          the current UMA specification relies on the POST request.
+          This is in order to enable the host to deliver its own access token to the AM
+          to access the token status endpoint.</t>
 
         <figure>
           <preamble>Example of a request to the token validation endpoint that
@@ -1462,23 +1469,19 @@ Location: https://am.example.com/permreg/host/photoz.example.com/5454345rdsaa454
 ]]></artwork>
         </figure>
 
-        <t>If the registration request fails, the AM responds with an HTTP 400
-        (Bad Request) status code and includes one of the following error
-        codes (see <xref target="uma-error-response"></xref>):<list
+        <t>If the registration request is authenticated properly but fails 
+          due to other reasons, the AM responds with an HTTP 400 (Bad Request) 
+          status code and includes one of the following UMA error 
+          codes (see <xref target="uma-error-response"></xref>):<list
             style="hanging">
             <t hangText="invalid_resource_set_id">The provided resource set
             identifier was not found at the AM.</t>
 
             <t hangText="invalid_scope">At least one of the scopes included in
             the request was not registered previously by this host.</t>
-
-            <t hangText="invalid_requester_token">The requester access token
-            was not recognized by the AM.</t>
-
-            <t hangText="expired_requester_token">The requester access token
-            has expired.</t>
           </list></t>
       </section>
+
 
       <section anchor="r-am-authz-scope"
                title="Requester-AM: Request Authorization to Add Permission">
