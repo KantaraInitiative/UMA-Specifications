@@ -56,7 +56,7 @@
       </address>
     </author>
 
-    <date day="22" month="February" year="2017" />
+    <date day="26" month="February" year="2017" />
 
     <abstract>
       <t>User-Managed Access (UMA) 2.0 makes use of OAuth 2.0 and related
@@ -273,10 +273,10 @@
       </section>
 
       <section title="Notational Conventions">
-        <t>The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL NOT',
-        'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'MAY', and 'OPTIONAL' in this
-        document are to be interpreted as described in <xref
-        target="RFC2119" />.</t>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described in
+        <xref target="RFC2119" />.</t>
 
         <t>Unless otherwise noted, all protocol properties and values are case
         sensitive. JSON <xref target="RFC7159" /> data structures defined by
@@ -1729,6 +1729,13 @@ Host: client.example.com
               permissions associated with the RPT from the request.</t>
             </list></t>
 
+          <t>The authorization server MAY include any of the parameters
+          defined in Section 5.1 of <xref target="RFC6749" /> on its response,
+          except that it is NOT RECOMMENDED to include the <spanx
+          style="verb">scope</spanx> parameter. This is because RPTs are
+          associated with scopes that are associated with specific
+          resources.</t>
+
           <t>If the authorization server is upgrading an RPT, and the RPT
           string is new rather than repeating the RPT provided by the client
           in the request, then the authorization server SHOULD revoke the
@@ -1771,38 +1778,41 @@ Content-Type: application/json
         <section anchor="authorization-failure"
                  title="Authorization Server Response to Client on Authorization Failure">
           <t>If the client's request to the token endpoint is not sufficient
-          for granting an RPT, the authorization server responds using one of
-          the following error codes and corresponding HTTP status codes. The
-          first five error responses end the current authorization process;
-          the client is free to attempt access to the protected resource
-          another time. The sixth error response, <spanx
-          style="verb">need_info</spanx>, begins or continues an authorization
-          process loop that concludes only when the client receives one of the
-          other five errors or a success condition (as described in <xref
-          target="give-rpt" />).<list style="hanging">
-              <t hangText="invalid_ticket">The provided ticket was not found
-              at the authorization server. The authorization server responds
-              with the HTTP 400 (Bad Request) status code.</t>
-
-              <t hangText="expired_ticket">The provided ticket has expired.
-              The authorization server responds with the HTTP 400 (Bad
-              Request) status code.</t>
-
-              <t hangText="not_authorized">The client is not authorized to
-              have these permissions added. The authorization server responds
-              with the HTTP 403 (Forbidden) status code.</t>
+          for granting an RPT, the authorization server responds using an
+          error code and corresponding HTTP status code. Any error code other
+          than <spanx style="verb">need_info</spanx> ends the current
+          authorization process; the client is free to attempt access to the
+          protected resource another time. The <spanx
+          style="verb">need_info</spanx> error code begins or continues an
+          authorization process loop that concludes only when the client
+          receives one of the other errors or a success condition (as
+          described in <xref target="give-rpt" />).<list style="hanging">
+              <t hangText="invalid_grant">If the provided ticket was not found
+              at the authorization server, or the provided ticket has expired,
+              or if any other original reasons to use this error response are
+              found as defined in <xref target="RFC6749" />, the authorization
+              server responds with the HTTP 400 (Bad Request) status code.
+              This error code is original to <xref target="RFC6749" /> but has
+              additional uses with the UMA grant.</t>
 
               <t hangText="invalid_scope">At least one of the scopes included
               in the request does not match an available scope for any of the
               resources associated with requested permissions for the
               permission ticket provided by the client. The authorization
-              server responds with the HTTP 400 (Bad Request) status code.</t>
+              server responds with the HTTP 400 (Bad Request) status code.
+              This error code is an extended version defined for use with the
+              UMA grant.</t>
+
+              <t hangText="not_authorized">The client is not authorized to
+              have these permissions added. The authorization server responds
+              with the HTTP 403 (Forbidden) status code. This error code is
+              unique to the UMA grant.</t>
 
               <t hangText="request_submitted">The authorization server
               requires intervention by the resource owner to determine whether
               the client is authorized to have these permissions. The
               authorization server responds with the HTTP 403 (Forbidden)
-              status code.</t>
+              status code. This error code is unique to the UMA grant.</t>
 
               <t hangText="need_info">The authorization server needs
               additional information in order to determine whether the client
@@ -1811,7 +1821,8 @@ Content-Type: application/json
               MUST include a <spanx style="verb">ticket</spanx> object, and it
               MAY also include an <spanx style="verb">error_details</spanx>
               object that contains one or more sub-properties with hints about
-              further required information.<list style="hanging">
+              further required information. This error code is unique to the
+              UMA grant.<list style="hanging">
                   <t hangText="ticket">REQUIRED. A permission ticket that
                   allows the client to make further requests to the
                   authorization server during this attempted authorization.
@@ -2755,6 +2766,20 @@ Cache-Control: no-store
         possibility.</t>
       </section>
 
+      <section title="Resource Owner Information at the Resource Server">
+        <t>Since the initial request for a resource is made in an unauthorized
+        and unauthenticated context, such requests are by definition open to
+        all users. The response of that request includes a pointer to the
+        authorization server to query for an access token and present claims.
+        If it is known out of band that authorization server is owned and
+        controlled by a single user, or visiting the authorization server
+        contains other identifying information, then an unauthenticated and
+        unauthorized client would be able to tell which resource owner is
+        associated with a given resource. Other information about the resource
+        owner, such as organizational affiliation or group membership, may be
+        gained from this transaction as well.</t>
+      </section>
+
       <section title="Profiles and Trust Establishment">
         <t>Parties that are operating and using UMA software entities have
         opportunities to establish agreements about mutual rights,
@@ -2777,7 +2802,7 @@ Cache-Control: no-store
         <section title="Registry Contents">
           <t>
             <list style="symbols">
-              <t>Claim name: permissions</t>
+              <t>Claim name: <spanx style="verb">permissions</spanx></t>
 
               <t>Claim description: Array of objects, each describing a set of
               scoped, time-limitable entitlements to a resource</t>
@@ -2792,20 +2817,42 @@ Cache-Control: no-store
         </section>
       </section>
 
-      <section title="OAuth Token Introspection Response Registration">
-        <t>This specification registers the claim defined in <xref
-        target="uma-bearer-token-profile" />.</t>
+      <section title="Well-Known URI Registration">
+        <t>This specification registers the well-known URI defined in <xref
+        target="am-endpoints" />, as required by Section 5.1 of <xref
+        target="RFC5785" />.</t>
 
         <section title="Registry Contents">
           <t>
             <list style="symbols">
-              <t>Name: permissions</t>
+              <t>URI suffix: <spanx
+              style="verb">uma2-configuration</spanx></t>
 
-              <t>Description: Array of objects, each describing a set of
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref
+              target="config-doc-discovery-endpoint" /> in this document</t>
+            </list>
+          </t>
+        </section>
+      </section>
+
+      <section title="OAuth Token Introspection Response Registration">
+        <t>This specification registers the claim defined in <xref
+        target="uma-bearer-token-profile" />, as required by Section 3.1 of
+        <xref target="RFC7662" />.</t>
+
+        <section title="Registry Contents">
+          <t>
+            <list style="symbols">
+              <t>Claim name: <spanx style="verb">permissions</spanx></t>
+
+              <t>Claim description: array of objects, each describing a set of
               scoped, time-limitable entitlements to a resource</t>
 
               <t>Change controller: Kantara Initiative User-Managed Access
-              Work Group - wg-uma@kantarainitiative.org</t>
+              Work Group - staff@kantarainitiative.org</t>
 
               <t>Specification document: <xref
               target="uma-bearer-token-profile" /> in this document</t>
@@ -2814,94 +2861,171 @@ Cache-Control: no-store
         </section>
       </section>
 
-      <section title="Well-Known URI Registration">
-        <t>This specification registers the well-known URI defined in <xref
-        target="am-endpoints" />.</t>
+      <section title="OAuth 2.0 Extension Grant Parameters Registration">
+        <t>This specification registers the parameters defined in <xref
+        target="uma-grant-type" />, as required by Section 11.2 of <xref
+        target="RFC6749" />.</t>
 
         <section title="Registry Contents">
           <t>
             <list style="symbols">
-              <t>URI suffix: uma2-configuration</t>
+              <t>Parameter name: <spanx style="verb">ticket</spanx></t>
+
+              <t>Parameter usage location: client request, token endpoint</t>
 
               <t>Change controller: Kantara Initiative User-Managed Access
-              Work Group - wg-uma@kantarainitiative.org</t>
+              Work Group - staff@kantarainitiative.org</t>
 
-              <t>Specification document: <xref target="am-endpoints" /> in
+              <t>Specification document: <xref target="uma-grant-type" /> in
               this document</t>
+            </list>
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>Parameter name: <spanx style="verb">rpt</spanx></t>
+
+              <t>Parameter usage location: client request, token endpoint</t>
+
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="uma-grant-type" /> in
+              this document</t>
+            </list>
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>Parameter name: <spanx style="verb">claim_tokens</spanx></t>
+
+              <t>Parameter usage location: client request, token endpoint</t>
+
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="uma-grant-type" /> in
+              this document</t>
+            </list>
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>Parameter name: <spanx style="verb">pct</spanx></t>
+
+              <t>Parameter usage location: client request, token endpoint</t>
+
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="uma-grant-type" /> in
+              this document</t>
+            </list>
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>Parameter name: <spanx style="verb">pct</spanx></t>
+
+              <t>Parameter usage location: authorization server response,
+              token endpoint</t>
+
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="give-rpt" /> in this
+              document</t>
+            </list>
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>Parameter name: <spanx style="verb">upgraded</spanx></t>
+
+              <t>Parameter usage location: authorization server response,
+              token endpoint</t>
+
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="give-rpt" /> in this
+              document</t>
             </list>
           </t>
         </section>
       </section>
 
-      <section title="OAuth 2.0 Extension Grant Parameters Registration">
-        <t>This specification registers the parameters defined in <xref
-        target="uma-grant-type" />.</t>
+      <section title="OAuth 2.0 Extensions Error Registration">
+        <t>This specification registers the errors defined in <xref
+        target="authorization-failure" />, as required by Section 11.4 of
+        <xref target="RFC6749" />.</t>
 
         <section title="Registry Contents">
           <t>
             <list style="symbols">
-              <t>Grant type: <spanx
-              style="verb">urn:ietf:params:oauth:grant-type:uma-ticket</spanx></t>
+              <t>Error name: <spanx style="verb">invalid_scope</spanx></t>
 
               <t>Change controller: Kantara Initiative User-Managed Access
-              Work Group - wg-uma@kantarainitiative.org</t>
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="uma-grant-type" /> in
+              this document (definition replaces the original definition in
+              <xref target="RFC6749" />)</t>
+
+              <t>Error usage location: authorization server response, token
+              endpoint</t>
+            </list>
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>Error name: <spanx style="verb">not_authorized</spanx> (note:
+              this error is distinct from <spanx
+              style="verb">unauthorized_client</spanx>; it refers to the
+              authorization status of the requesting side)</t>
+
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
 
               <t>Specification document: <xref target="uma-grant-type" /> in
               this document</t>
 
-              <t>Parameters (usage locations are all on the token
-              endpoint):<list style="symbols">
-                  <t hangText="ticket">
-                    <spanx style="verb">ticket</spanx>
-                  </t>
-
-                  <t hangText="ticket">
-                    <spanx style="verb">rpt</spanx>
-                  </t>
-
-                  <t hangText="ticket">
-                    <spanx style="verb">claim_tokens</spanx>
-                  </t>
-
-                  <t hangText="ticket">
-                    <spanx style="verb">pct</spanx>
-                  </t>
-
-                  <t hangText="ticket">
-                    <spanx style="verb">upgraded</spanx>
-                  </t>
-                </list></t>
+              <t>Error usage location: authorization server response, token
+              endpoint</t>
             </list>
           </t>
-        </section>
 
-        <section title="Error Responses">
-          <t>The UMA grant specifies the following additional error responses,
-          as defined in <xref target="authorization-failure" />:<list
-              style="symbols">
-              <t>
-                <spanx style="verb">invalid_ticket</spanx>
-              </t>
+          <t>
+            <list style="symbols">
+              <t>Error name: <spanx style="verb">request_submitted</spanx></t>
 
-              <t>
-                <spanx style="verb">expired_ticket</spanx>
-              </t>
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
 
-              <t>
-                <spanx style="verb">not_authorized</spanx>
-              </t>
+              <t>Specification document: <xref target="uma-grant-type" /> in
+              this document</t>
 
-              <t>
-                <spanx style="verb">request_submitted</spanx>
-              </t>
+              <t>Error usage location: authorization server response, token
+              endpoint</t>
+            </list>
+          </t>
 
-              <t>
-                <spanx style="verb">need_info</spanx>
-              </t>
-            </list></t>
+          <t>
+            <list style="symbols">
+              <t>Error name: <spanx style="verb">need_info</spanx> (and its
+              subsidiary <spanx style="verb">ticket</spanx> and <spanx
+              style="verb">error_details</spanx> structures)</t>
 
-          <t>It uses the existing <spanx style="verb">invalid_scope</spanx>
-          error response in a constrained sense.</t>
+              <t>Change controller: Kantara Initiative User-Managed Access
+              Work Group - staff@kantarainitiative.org</t>
+
+              <t>Specification document: <xref target="uma-grant-type" /> in
+              this document</t>
+
+              <t>Error usage location: authorization server response, token
+              endpoint</t>
+            </list>
+          </t>
         </section>
       </section>
     </section>
