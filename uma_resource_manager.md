@@ -13,11 +13,35 @@ This document extends [UMA Fedz] in order to specify the interface provided by t
 
 
 
+Reqs:
+
+- THe RO must authenticate to the RS, in order to authorize access to this API 
+	- (this capability of the RS is implied by UMA)
+
+- The RO can see a list of resources available at this RS (either protected or not)
+- The RO can modify the protection of resources (ie which AS to protect)
+
+- The RO can see AS's available for protection
+	- can the RO direct the RS to get a PAT from a new AS? This is tricky depending on how PAT's are issued (ie may require end-user redirection)
 
 
-- THe RO must authenticate to the RS (this capability is implied by UMA... 
 
 
-Resources API
 
-Allows the RO to see available resources, see and set their current protection (ie AS)
+## Available Resources Endpoint
+
+The API available at the available resources endpoint enables the resource manager to have knowledge of the resources hosted by the resource server for the resource owner. 
+
+
+
+### Available Resource Description
+
+A registered resource is a JSON document that extends the resource description from [UMA Fedz 3.1 Resource Description](1) with the following parameters:
+
+authorization_server OPTIONAL A string identifying the authorization server that protects this resource
+** could also be the AS policy uri from resource registration?
+
+(1 https://docs.kantarainitiative.org/uma/wg/rec-oauth-uma-federated-authz-2.0.html#resource-set-desc)
+
+
+
