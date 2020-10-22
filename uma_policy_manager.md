@@ -49,6 +49,7 @@ By allowing The AS to delegate the policy management user experience and advice 
 - In conjunction with the Relationship Manager API (Resource Manager API?), the RO may protect a resource server at many ASs (?)
 
 
+- select use cases
 
 Use Case (trusted claims example)
 
@@ -215,6 +216,10 @@ Figure TDB illustrates the policy API operations, with requests and success resp
 A policy is a JSON document, that describes the a policy sufficiently for the authorization server to make a decision for a resource request. A policy document MAY be provided as a signed JWT to ensure it's integrity to the RS during enforcement. A policy description has the following parameters
 
 
+There may be many policies registered against the same resource
+
+
+
 resource_id REQUIRED The resource id registered at the AS that this policy applies to
 
 resource_scopes REQUIRED The approved scopes if the claims requirements are met
@@ -240,9 +245,24 @@ For example...
       "read-public",
       "post-updates",
   ],
-  required_claims: []
+  required_claims: [
+      {  
+         "claim_token_format":[  
+            "http://openid.net/specs/openid-connect-core-1_0.html#IDToken"
+         ],
+         "claim_type":"urn:oid:0.9.2342.19200300.100.1.3",
+         "friendly_name":"email",
+         "issuer":[  
+            "https://example.com/idp"
+         ],
+         "name":"email23423453ou453"
+      }
+
+
+  ]
 }
 ```
+
 
 
 

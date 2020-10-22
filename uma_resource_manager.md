@@ -43,5 +43,27 @@ authorization_server OPTIONAL A string identifying the authorization server that
 
 (1 https://docs.kantarainitiative.org/uma/wg/rec-oauth-uma-federated-authz-2.0.html#resource-set-desc)
 
+#### List Available Resource Descriptions
 
+
+
+#### Update Available Resources Description
+
+
+
+
+
+
+## Authorization Server Endpoint
+
+
+The API available at the authorization server endpoint enables the resource manager to view and manage the authorization servers available for resource protection. The resource owner may allow resource protection only through the set of available authorization servers. 
+
+***note***: a challenge here is that it's quite difficult for this interface to create a relationship between an AS/RS because how the PAT is issued (ie could be interactive)
+
+
+
+### Authorization Server Description
+
+#### List Authorization Server Description
 
